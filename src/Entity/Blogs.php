@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\BlogsRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -25,7 +27,7 @@ class Blogs
     private $main_img;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=180, unique=true)
      */
     private $title;
 
@@ -70,6 +72,26 @@ class Blogs
      */
     private $is_publushed;
 
+    /**
+     * @ORM\OneToMany(targetEntity=PostMeta::class, mappedBy="blogId", orphanRemoval=true)
+     */
+    private $postMetas;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="blogId", orphanRemoval=true)
+     */
+    private $comments;
+
+    /**
+     * @ORM\OneToMany(targetEntity=BlogTag::class, mappedBy="blogId", orphanRemoval=true)
+     */
+    private $blogTags;
+
+    /**
+     * @ORM\OneToMany(targetEntity=BlogCategory::class, mappedBy="blog_id")
+     */
+    private $blogCategories;
+
 
     public function __construct()
     {
@@ -77,6 +99,10 @@ class Blogs
         $this->lastupdate_at = new \DateTimeImmutable();
         $this->deleted = false;
         $this->num_views = 0;
+        $this->postMetas = new ArrayCollection();
+        $this->comments = new ArrayCollection();
+        $this->blogTags = new ArrayCollection();
+        $this->blogCategories = new ArrayCollection();
     }
 
 
@@ -200,6 +226,130 @@ class Blogs
     public function setIsPublushed(bool $is_publushed): self
     {
         $this->is_publushed = $is_publushed;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|PostMeta[]
+     */
+    public function getPostMetas(): Collection
+    {
+        return $this->postMetas;
+    }
+
+    public function addPostMeta(PostMeta $postMeta): self
+    {
+        if (!$this->postMetas->contains($postMeta)) {
+            $this->postMetas[] = $postMeta;
+            $postMeta->setBlogId($this);
+        }
+
+        return $this;
+    }
+
+    public function removePostMeta(PostMeta $postMeta): self
+    {
+        if ($this->postMetas->contains($postMeta)) {
+            $this->postMetas->removeElement($postMeta);
+            // set the owning side to null (unless already changed)
+            if ($postMeta->getBlogId() === $this) {
+                $postMeta->setBlogId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Comment[]
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setBlogId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->contains($comment)) {
+            $this->comments->removeElement($comment);
+            // set the owning side to null (unless already changed)
+            if ($comment->getBlogId() === $this) {
+                $comment->setBlogId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|BlogTag[]
+     */
+    public function getBlogTags(): Collection
+    {
+        return $this->blogTags;
+    }
+
+    public function addBlogTag(BlogTag $blogTag): self
+    {
+        if (!$this->blogTags->contains($blogTag)) {
+            $this->blogTags[] = $blogTag;
+            $blogTag->setBlogId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBlogTag(BlogTag $blogTag): self
+    {
+        if ($this->blogTags->contains($blogTag)) {
+            $this->blogTags->removeElement($blogTag);
+            // set the owning side to null (unless already changed)
+            if ($blogTag->getBlogId() === $this) {
+                $blogTag->setBlogId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|BlogCategory[]
+     */
+    public function getBlogCategories(): Collection
+    {
+        return $this->blogCategories;
+    }
+
+    public function addBlogCategory(BlogCategory $blogCategory): self
+    {
+        if (!$this->blogCategories->contains($blogCategory)) {
+            $this->blogCategories[] = $blogCategory;
+            $blogCategory->setBlogId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBlogCategory(BlogCategory $blogCategory): self
+    {
+        if ($this->blogCategories->contains($blogCategory)) {
+            $this->blogCategories->removeElement($blogCategory);
+            // set the owning side to null (unless already changed)
+            if ($blogCategory->getBlogId() === $this) {
+                $blogCategory->setBlogId(null);
+            }
+        }
 
         return $this;
     }
