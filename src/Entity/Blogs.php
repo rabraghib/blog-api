@@ -20,11 +20,6 @@ class Blogs
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=100)
-     */
-    private $poster_username;
-
-    /**
      * @ORM\Column(type="string", length=255)
      */
     private $main_img;
@@ -64,6 +59,17 @@ class Blogs
      */
     private $deleted;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="user_blogs")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $poster;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $is_publushed;
+
 
     public function __construct()
     {
@@ -83,19 +89,6 @@ class Blogs
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getPosterUsername(): ?string
-    {
-        return $this->poster_username;
-    }
-
-    public function setPosterUsername(string $poster_username): self
-    {
-        $this->poster_username = $poster_username;
-        $this->onUpdate();
-
-        return $this;
     }
 
     public function getMainImg(): ?string
@@ -183,6 +176,30 @@ class Blogs
     {
         $this->deleted = $deleted;
         $this->onUpdate();
+
+        return $this;
+    }
+
+    public function getPoster(): ?User
+    {
+        return $this->poster;
+    }
+
+    public function setPoster(?User $poster): self
+    {
+        $this->poster = $poster;
+
+        return $this;
+    }
+
+    public function getIsPublushed(): ?bool
+    {
+        return $this->is_publushed;
+    }
+
+    public function setIsPublushed(bool $is_publushed): self
+    {
+        $this->is_publushed = $is_publushed;
 
         return $this;
     }
