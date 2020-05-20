@@ -25,7 +25,7 @@ class Blogs
     private $main_img;
 
     /**
-     * @ORM\Column(type="string", length=255, unique=true)
+     * @ORM\Column(type="string", length=255)
      */
     private $title;
 
