@@ -11,7 +11,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ApiResource( 
- *     collectionOperations={"get"={"method"="GET"}},
+ *     collectionOperations={"get"},
  *     itemOperations={"get"}
  * )
  * @ORM\Entity(repositoryClass=UserRepository::class)
