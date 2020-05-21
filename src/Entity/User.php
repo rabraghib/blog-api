@@ -81,6 +81,13 @@ class User implements UserInterface
     public function __construct()
     {
         $this->user_blogs = new ArrayCollection();
+        $this->registeredAt = new \DateTimeImmutable();
+        $this->onUpdate();
+    }
+
+    public function onUpdate()
+    {
+        $this->lastLogin = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -195,6 +202,7 @@ class User implements UserInterface
     public function setFirstName(string $firstName): self
     {
         $this->firstName = $firstName;
+        $this->onUpdate();
 
         return $this;
     }
@@ -207,6 +215,7 @@ class User implements UserInterface
     public function setLastName(string $lastName): self
     {
         $this->lastName = $lastName;
+        $this->onUpdate();
 
         return $this;
     }
@@ -219,6 +228,7 @@ class User implements UserInterface
     public function setEmail(string $email): self
     {
         $this->email = $email;
+        $this->onUpdate();
 
         return $this;
     }
@@ -231,6 +241,7 @@ class User implements UserInterface
     public function setMobile(?string $mobile): self
     {
         $this->mobile = $mobile;
+        $this->onUpdate();
 
         return $this;
     }
@@ -243,6 +254,7 @@ class User implements UserInterface
     public function setIntro(string $intro): self
     {
         $this->intro = $intro;
+        $this->onUpdate();
 
         return $this;
     }
@@ -252,22 +264,9 @@ class User implements UserInterface
         return $this->registeredAt;
     }
 
-    public function setRegisteredAt(\DateTimeInterface $registeredAt): self
-    {
-        $this->registeredAt = $registeredAt;
-
-        return $this;
-    }
-
     public function getLastLogin(): ?\DateTimeInterface
     {
         return $this->lastLogin;
     }
 
-    public function setLastLogin(\DateTimeInterface $lastLogin): self
-    {
-        $this->lastLogin = $lastLogin;
-
-        return $this;
-    }
 }

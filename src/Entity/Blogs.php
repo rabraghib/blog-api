@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass=BlogsRepository::class)
@@ -88,10 +89,9 @@ class Blogs
     private $blogTags;
 
     /**
-     * @ORM\OneToMany(targetEntity=BlogCategory::class, mappedBy="blog_id")
+     * @ORM\OneToOne(targetEntity=BlogCategory::class, mappedBy="blogId", cascade={"persist", "remove"})
      */
-    private $blogCategories;
-
+    private $blogCategory;
 
     public function __construct()
     {
@@ -104,7 +104,6 @@ class Blogs
         $this->blogTags = new ArrayCollection();
         $this->blogCategories = new ArrayCollection();
     }
-
 
     public function onUpdate()
     {
@@ -193,11 +192,6 @@ class Blogs
         return $this;
     }
 
-    public function getDeleted(): ?bool
-    {
-        return $this->deleted;
-    }
-
     public function DeleteBlog(bool $deleted): self
     {
         $this->deleted = $deleted;
@@ -214,6 +208,7 @@ class Blogs
     public function setPoster(?User $poster): self
     {
         $this->poster = $poster;
+        $this->onUpdate();
 
         return $this;
     }
@@ -226,6 +221,7 @@ class Blogs
     public function setIsPublushed(bool $is_publushed): self
     {
         $this->is_publushed = $is_publushed;
+        $this->onUpdate();
 
         return $this;
     }
@@ -323,32 +319,18 @@ class Blogs
         return $this;
     }
 
-    /**
-     * @return Collection|BlogCategory[]
-     */
-    public function getBlogCategories(): Collection
+    public function getBlogCategory(): ?BlogCategory
     {
-        return $this->blogCategories;
+        return $this->blogCategory;
     }
 
-    public function addBlogCategory(BlogCategory $blogCategory): self
+    public function setBlogCategory(BlogCategory $blogCategory): self
     {
-        if (!$this->blogCategories->contains($blogCategory)) {
-            $this->blogCategories[] = $blogCategory;
+        $this->blogCategory = $blogCategory;
+
+        // set the owning side of the relation if necessary
+        if ($blogCategory->getBlogId() !== $this) {
             $blogCategory->setBlogId($this);
-        }
-
-        return $this;
-    }
-
-    public function removeBlogCategory(BlogCategory $blogCategory): self
-    {
-        if ($this->blogCategories->contains($blogCategory)) {
-            $this->blogCategories->removeElement($blogCategory);
-            // set the owning side to null (unless already changed)
-            if ($blogCategory->getBlogId() === $this) {
-                $blogCategory->setBlogId(null);
-            }
         }
 
         return $this;

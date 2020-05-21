@@ -46,15 +46,9 @@ class Category
      */
     private $categories;
 
-    /**
-     * @ORM\OneToMany(targetEntity=BlogCategory::class, mappedBy="categoryId", orphanRemoval=true)
-     */
-    private $blogCategories;
-
     public function __construct()
     {
         $this->categories = new ArrayCollection();
-        $this->blogCategories = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -141,34 +135,4 @@ class Category
         return $this;
     }
 
-    /**
-     * @return Collection|BlogCategory[]
-     */
-    public function getBlogCategories(): Collection
-    {
-        return $this->blogCategories;
-    }
-
-    public function addBlogCategory(BlogCategory $blogCategory): self
-    {
-        if (!$this->blogCategories->contains($blogCategory)) {
-            $this->blogCategories[] = $blogCategory;
-            $blogCategory->setCategoryId($this);
-        }
-
-        return $this;
-    }
-
-    public function removeBlogCategory(BlogCategory $blogCategory): self
-    {
-        if ($this->blogCategories->contains($blogCategory)) {
-            $this->blogCategories->removeElement($blogCategory);
-            // set the owning side to null (unless already changed)
-            if ($blogCategory->getCategoryId() === $this) {
-                $blogCategory->setCategoryId(null);
-            }
-        }
-
-        return $this;
-    }
 }

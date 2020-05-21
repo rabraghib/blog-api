@@ -20,16 +20,17 @@ class BlogCategory
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=blogs::class, inversedBy="blogCategories")
+     * @ORM\OneToOne(targetEntity=Blogs::class, inversedBy="blogCategory", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
      */
-    private $blog_id;
+    private $blogId;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="blogCategories")
+     * @ORM\ManyToOne(targetEntity=Category::class)
      * @ORM\JoinColumn(nullable=false)
      */
-    private $categoryId;
+    private $CategoryId;
+
 
     public function getId(): ?int
     {
@@ -38,25 +39,26 @@ class BlogCategory
 
     public function getBlogId(): ?blogs
     {
-        return $this->blog_id;
+        return $this->blogId;
     }
 
-    public function setBlogId(?blogs $blog_id): self
+    public function setBlogId(blogs $blogId): self
     {
-        $this->blog_id = $blog_id;
+        $this->blogId = $blogId;
 
         return $this;
     }
 
     public function getCategoryId(): ?Category
     {
-        return $this->categoryId;
+        return $this->CategoryId;
     }
 
-    public function setCategoryId(?Category $categoryId): self
+    public function setCategoryId(?Category $CategoryId): self
     {
-        $this->categoryId = $categoryId;
+        $this->CategoryId = $CategoryId;
 
         return $this;
     }
+
 }
