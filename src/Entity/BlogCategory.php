@@ -7,7 +7,6 @@ use App\Repository\BlogCategoryRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource()
  * @ORM\Entity(repositoryClass=BlogCategoryRepository::class)
  */
 class BlogCategory

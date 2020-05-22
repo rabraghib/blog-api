@@ -2,15 +2,41 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\BlogsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
-
+#  "controller"=App\Controller\BlogController::class
 /**
- * @ApiResource()
+ * @ApiResource(
+ *     collectionOperations={
+ *         "get"={
+ *             "path"="/blogs",
+ *             "normalization_context"={"groups"={"short"}}
+ *         },
+ *        "post"={
+ *            "path"="/auth/blog/{id}"
+ *        }
+ *     },
+ *     itemOperations={
+ *         "get",
+ *        "patch"={
+ *            "path"="/auth/blog/{id}",
+ *            "security"="is_granted('ROLE_ADMIN') or object.poster == user"
+ *        },
+ *        "delete"={
+ *            "path"="/auth/blog/{id}",
+ *            "security"="is_granted('ROLE_ADMIN') or object.poster == user"
+ *         }
+ *     }
+ * )
+ * @ApiFilter(BooleanFilter::class, properties={"is_publushed"=true})
  * @ORM\Entity(repositoryClass=BlogsRepository::class)
  */
 class Blogs
@@ -24,16 +50,19 @@ class Blogs
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("short")
      */
     private $main_img;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Groups("short")
      */
     private $title;
 
     /**
      * @ORM\Column(type="string", length=700)
+     * @Groups("short")
      */
     private $intro;
     
@@ -44,27 +73,26 @@ class Blogs
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups("short")
      */
     private $created_at;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups("short")
      */
     private $lastupdate_at;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups("short")
      */
     private $num_views;
 
     /**
-     * @ORM\Column(type="boolean")
-     */
-    private $deleted;
-
-    /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="user_blogs")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups("short")
      */
     private $poster;
 
@@ -85,24 +113,26 @@ class Blogs
 
     /**
      * @ORM\OneToMany(targetEntity=BlogTag::class, mappedBy="blogId", orphanRemoval=true)
+     * @Groups("short")
      */
     private $blogTags;
 
     /**
      * @ORM\OneToOne(targetEntity=BlogCategory::class, mappedBy="blogId", cascade={"persist", "remove"})
+     * @Groups("short")
      */
     private $blogCategory;
 
-    public function __construct()
+    public function __construct(TokenStorageInterface $tokenStorage)
     {
         $this->created_at = new \DateTimeImmutable();
         $this->lastupdate_at = new \DateTimeImmutable();
-        $this->deleted = false;
         $this->num_views = 0;
         $this->postMetas = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->blogTags = new ArrayCollection();
         $this->blogCategories = new ArrayCollection();
+        $this->poster = $tokenStorage->getToken()->getUser();
     }
 
     public function onUpdate()
@@ -192,25 +222,9 @@ class Blogs
         return $this;
     }
 
-    public function DeleteBlog(bool $deleted): self
-    {
-        $this->deleted = $deleted;
-        $this->onUpdate();
-
-        return $this;
-    }
-
     public function getPoster(): ?User
     {
         return $this->poster;
-    }
-
-    public function setPoster(?User $poster): self
-    {
-        $this->poster = $poster;
-        $this->onUpdate();
-
-        return $this;
     }
 
     public function getIsPublushed(): ?bool

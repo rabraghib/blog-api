@@ -7,7 +7,6 @@ use App\Repository\BlogTagRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource()
  * @ORM\Entity(repositoryClass=BlogTagRepository::class)
  */
 class BlogTag

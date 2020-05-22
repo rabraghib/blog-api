@@ -2,13 +2,40 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Blogs;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
+use Faker\Factory;
 
 class AppFixtures extends Fixture
 {
+
     public function load(ObjectManager $manager)
     {
+        $faker = Factory::create();
+        for ($u = 0; $u <10; $u++){
+            $user = new User();
+            $user->setEmail($faker->email)
+                ->setUsername($faker->userName)
+                ->setPassword($faker->password)
+                ->setFirstName($faker->firstName)
+                ->setLastName($faker->lastName)
+                ->setMobile($faker->phoneNumber)
+                ->setIntro($faker->text(500));
+            $manager->persist($user);
+            for ($b = 0;$b < random_int(1,8); $b++){
+                $blog = new Blogs();
+                $blog
+                    ->setTitle($faker->text(180))
+                    ->setIntro($faker->text(500))
+                    ->setIsPublushed(true)
+                    ->setPoster($user)
+                    ->setContent($faker->text(10000))
+                    ->setMainImg($faker->imageUrl());
+                $manager->persist($blog);
+            }
+        }
         // $product = new Product();
         // $manager->persist($product);
 

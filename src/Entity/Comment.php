@@ -42,11 +42,6 @@ class Comment
     private $created_at;
 
     /**
-     * @ORM\Column(type="boolean")
-     */
-    private $deleted;
-
-    /**
      * @ORM\Column(type="datetime")
      */
     private $lastUpdate_at;
@@ -100,18 +95,6 @@ class Comment
     public function setCreatedAt(\DateTimeInterface $created_at): self
     {
         $this->created_at = $created_at;
-
-        return $this;
-    }
-
-    public function getDeleted(): ?bool
-    {
-        return $this->deleted;
-    }
-
-    public function setDeleted(bool $deleted): self
-    {
-        $this->deleted = $deleted;
 
         return $this;
     }
