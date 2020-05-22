@@ -121,10 +121,9 @@ class Blogs
     private $blogTags;
 
     /**
-     * @ORM\OneToOne(targetEntity=BlogCategory::class, mappedBy="blogId", cascade={"persist", "remove"})
-     * @Groups("short")
+     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="blogs")
      */
-    private $blogCategory;
+    private $Category;
 
     public function __construct(TokenStorageInterface $tokenStorage)
     {
@@ -336,19 +335,14 @@ class Blogs
         return $this;
     }
 
-    public function getBlogCategory(): ?BlogCategory
+    public function getCategory(): ?Category
     {
-        return $this->blogCategory;
+        return $this->Category;
     }
 
-    public function setBlogCategory(BlogCategory $blogCategory): self
+    public function setCategory(?Category $Category): self
     {
-        $this->blogCategory = $blogCategory;
-
-        // set the owning side of the relation if necessary
-        if ($blogCategory->getBlogId() !== $this) {
-            $blogCategory->setBlogId($this);
-        }
+        $this->Category = $Category;
 
         return $this;
     }

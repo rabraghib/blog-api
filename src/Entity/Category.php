@@ -46,9 +46,15 @@ class Category
      */
     private $categories;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Blogs::class, mappedBy="Category")
+     */
+    private $blogs;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
+        $this->blogs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -129,6 +135,37 @@ class Category
             // set the owning side to null (unless already changed)
             if ($category->getParentId() === $this) {
                 $category->setParentId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Blogs[]
+     */
+    public function getBlogs(): Collection
+    {
+        return $this->blogs;
+    }
+
+    public function addBlog(Blogs $blog): self
+    {
+        if (!$this->blogs->contains($blog)) {
+            $this->blogs[] = $blog;
+            $blog->setCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBlog(Blogs $blog): self
+    {
+        if ($this->blogs->contains($blog)) {
+            $this->blogs->removeElement($blog);
+            // set the owning side to null (unless already changed)
+            if ($blog->getCategory() === $this) {
+                $blog->setCategory(null);
             }
         }
 
