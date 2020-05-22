@@ -18,14 +18,18 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     collectionOperations={
  *         "get"={
  *             "path"="/blogs",
- *             "normalization_context"={"groups"={"short"}}
+ *             "normalization_context"={"groups"={"short"}},
+ *             "security"="is_granted('ROLE_ADMIN') or object.is_publushed == 'true' or object.poster == user"
  *         },
- *        "post"={
- *            "path"="/auth/blog/{id}"
- *        }
+ *         "post"={
+ *             "path"="/auth/blog/{id}"
+ *         }
  *     },
  *     itemOperations={
- *         "get",
+ *         "get"={
+ *             "path"="/blog/{id}",
+ *             "security"="is_granted('ROLE_ADMIN') or object.is_publushed == 'true' or object.poster == user"
+ *         },
  *        "patch"={
  *            "path"="/auth/blog/{id}",
  *            "security"="is_granted('ROLE_ADMIN') or object.poster == user"
@@ -36,7 +40,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *         }
  *     }
  * )
- * @ApiFilter(BooleanFilter::class, properties={"is_publushed"=true})
  * @ORM\Entity(repositoryClass=BlogsRepository::class)
  */
 class Blogs
@@ -99,7 +102,7 @@ class Blogs
     /**
      * @ORM\Column(type="boolean")
      */
-    private $is_publushed;
+    public $is_publushed;
 
     /**
      * @ORM\OneToMany(targetEntity=PostMeta::class, mappedBy="blogId", orphanRemoval=true)

@@ -7,12 +7,39 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource( 
- *     collectionOperations={"get"},
- *     itemOperations={"get"}
+ * @ApiResource(
+ *     collectionOperations={
+ *         "get"={
+ *             "path"="/users",
+ *             "normalization_context"={"groups"={"public"}}
+ *         },
+ *         "post"
+ *     },
+ *     itemOperations={
+ *         "get"={
+ *             "path"="/user/{id}",
+ *             "normalization_context"={"groups"={"public"}}
+ *         },
+ *        "getFull"={
+ *             "path"="/auth/user/{id}",
+ *             "method"="GET",
+ *             "controller"=App\Controller\UserControllers::class,
+ *             "security"="is_granted('ROLE_ADMIN') or object == user"
+ *         },
+ *        "patch"={
+ *            "path"="/auth/user/{id}",
+ *            "security"="is_granted('ROLE_ADMIN') or object == user"
+ *        },
+ *        "delete"={
+ *            "path"="/auth/user/{id}",
+ *            "security"="is_granted('ROLE_ADMIN') or object == user"
+ *         }
+ *     }
  * )
  * @ORM\Entity(repositoryClass=UserRepository::class)
  */
@@ -27,6 +54,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Groups("public")
      */
     private $username;
 
@@ -43,16 +71,19 @@ class User implements UserInterface
 
     /**
      * @ORM\OneToMany(targetEntity=Blogs::class, mappedBy="poster", orphanRemoval=true)
+     * @Groups("public")
      */
     private $user_blogs;
 
     /**
      * @ORM\Column(type="string", length=50)
+     * @Groups("public")
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=50)
+     * @Groups("public")
      */
     private $lastName;
 
@@ -68,11 +99,13 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=500)
+     * @Groups("public")
      */
     private $intro;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups("public")
      */
     private $registeredAt;
 
@@ -81,10 +114,16 @@ class User implements UserInterface
      */
     private $lastLogin;
 
-    public function __construct()
+    /**
+     * @var TokenStorageInterface
+     */
+    private $tokenStorage;
+
+    public function __construct(TokenStorageInterface $tokenStorage)
     {
         $this->user_blogs = new ArrayCollection();
         $this->registeredAt = new \DateTimeImmutable();
+        $this->tokenStorage = $tokenStorage;
         $this->onUpdate();
     }
 
@@ -129,8 +168,10 @@ class User implements UserInterface
 
     public function setRoles(array $roles): self
     {
-        $this->roles = $roles;
-
+        $user_rules = $this->tokenStorage->getToken()->getUser()->getRoles();
+        if(in_array("ROLE_ADMIN",$user_rules)){
+            $this->roles = $roles;
+        }
         return $this;
     }
 
@@ -142,9 +183,13 @@ class User implements UserInterface
         return (string) $this->password;
     }
 
-    public function setPassword(string $password): self
+    public function setPassword(string $password,string $oldPass=null): self
     {
-        $this->password = $password;
+        if(!$this->password){
+            $this->password = $password;
+        }elseif ($oldPass == $this->password){
+            $this->password = $password;
+        }
 
         return $this;
     }
