@@ -173,6 +173,7 @@ class User implements UserInterface
         if(in_array("ROLE_ADMIN",$user_rules)){
             $this->roles = $roles;
         }
+        $this->roles[] = "ROLE_USER";
         return $this;
     }
 
