@@ -57,6 +57,7 @@ class Blogs
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("short")
      */
     private $mainImg;
 
