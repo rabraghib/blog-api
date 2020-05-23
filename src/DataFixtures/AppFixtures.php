@@ -27,12 +27,12 @@ class AppFixtures extends Fixture
             for ($b = 0;$b < random_int(1,8); $b++){
                 $blog = new Blogs();
                 $blog
-                    ->setTitle($faker->text(180))
-                    ->setIntro($faker->text(500))
+                    ->setTitle($faker->text(80))
+                    ->setIntro($faker->text(200))
                     ->setIsPublushed(random_int(1,10)%2 == 0)
                     ->setPoster($user)
                     ->setContent($faker->text(10000))
-                    ->setMainImg($faker->imageUrl(900,500));
+                    ->setMainImg("https://picsum.photos/id/".random_int(1,100)."/900/500");
                 $manager->persist($blog);
             }
         }

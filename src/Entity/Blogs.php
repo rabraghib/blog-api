@@ -46,11 +46,12 @@ class Blogs
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups("short")
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=180, unique=true)
+     * @ORM\Column(type="string", length=80, unique=true)
      * @Groups("short")
      */
     private $title;
@@ -62,7 +63,7 @@ class Blogs
     private $mainImg;
 
     /**
-     * @ORM\Column(type="string", length=700)
+     * @ORM\Column(type="string", length=250)
      * @Groups("short")
      */
     private $intro;
@@ -137,7 +138,7 @@ class Blogs
         $this->comments = new ArrayCollection();
         $this->blogTags = new ArrayCollection();
         $this->tokenStorage = new TokenStorage();
-        //$this->poster = $this->tokenStorage->getToken()->getUser();
+        $this->poster = $this->tokenStorage->getToken()->getUser();
     }
 
     public function onUpdate()
@@ -219,7 +220,7 @@ class Blogs
     {
         return $this->poster;
     }
-
+/*
     public function setPoster(User $poster): self
     {
         $this->poster = $poster;
@@ -227,7 +228,7 @@ class Blogs
 
         return $this;
     }
-
+*/
     public function getIsPublushed(): ?bool
     {
         return $this->isPublushed;
