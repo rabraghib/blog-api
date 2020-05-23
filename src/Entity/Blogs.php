@@ -16,7 +16,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ApiResource(
  *     collectionOperations={
  *         "get"={
- *             "path"="/blogs",
+ *             "path"="/blogs.{_format}",
  *             "normalization_context"={"groups"={"short"}}
  *         },
  *         "post"={
@@ -83,7 +83,7 @@ class Blogs
      * @ORM\JoinColumn(nullable=false)
      * @Groups("short")
      */
-    private $poster;
+    public $poster;
 
     /**
      * @ORM\Column(type="boolean")
