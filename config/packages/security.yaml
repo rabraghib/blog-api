@@ -32,7 +32,7 @@ security:
             anonymous: true
 
         register:
-            pattern: ^/api/register
+            pattern: ^/register
             stateless: true
             anonymous: true
 
