@@ -29,10 +29,10 @@ class AppFixtures extends Fixture
                 $blog
                     ->setTitle($faker->text(180))
                     ->setIntro($faker->text(500))
-                    ->setIsPublushed(true)
+                    ->setIsPublushed(random_int(1,10)%2 == 0)
                     ->setPoster($user)
                     ->setContent($faker->text(10000))
-                    ->setMainImg($faker->imageUrl());
+                    ->setMainImg($faker->imageUrl(900,500));
                 $manager->persist($blog);
             }
         }

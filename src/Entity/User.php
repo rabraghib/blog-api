@@ -7,6 +7,7 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -41,7 +42,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *         }
  *     }
  * )
- * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @ORM\Entity(repositoryClass="App\Repository\UserRepository", repositoryClass=UserRepository::class)
  */
 class User implements UserInterface
 {
@@ -73,7 +74,7 @@ class User implements UserInterface
      * @ORM\OneToMany(targetEntity=Blogs::class, mappedBy="poster", orphanRemoval=true)
      * @Groups("public")
      */
-    private $user_blogs;
+    private $userBlogs;
 
     /**
      * @ORM\Column(type="string", length=50)
@@ -119,11 +120,11 @@ class User implements UserInterface
      */
     private $tokenStorage;
 
-    public function __construct(TokenStorageInterface $tokenStorage)
+    public function __construct()
     {
-        $this->user_blogs = new ArrayCollection();
+        $this->userBlogs = new ArrayCollection();
         $this->registeredAt = new \DateTimeImmutable();
-        $this->tokenStorage = $tokenStorage;
+        $this->tokenStorage = new TokenStorage();
         $this->onUpdate();
     }
 
@@ -216,13 +217,13 @@ class User implements UserInterface
      */
     public function getUserBlogs(): Collection
     {
-        return $this->user_blogs;
+        return $this->userBlogs;
     }
 
     public function addUserBlog(Blogs $userBlog): self
     {
-        if (!$this->user_blogs->contains($userBlog)) {
-            $this->user_blogs[] = $userBlog;
+        if (!$this->userBlogs->contains($userBlog)) {
+            $this->userBlogs[] = $userBlog;
             $userBlog->setPoster($this);
         }
 
@@ -231,8 +232,8 @@ class User implements UserInterface
 
     public function removeUserBlog(Blogs $userBlog): self
     {
-        if ($this->user_blogs->contains($userBlog)) {
-            $this->user_blogs->removeElement($userBlog);
+        if ($this->userBlogs->contains($userBlog)) {
+            $this->userBlogs->removeElement($userBlog);
             // set the owning side to null (unless already changed)
             if ($userBlog->getPoster() === $this) {
                 $userBlog->setPoster(null);

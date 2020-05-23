@@ -2,13 +2,12 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\BlogsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -18,8 +17,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     collectionOperations={
  *         "get"={
  *             "path"="/blogs",
- *             "normalization_context"={"groups"={"short"}},
- *             "security"="is_granted('ROLE_ADMIN') or object.is_publushed == 'true' or object.poster == user"
+ *             "normalization_context"={"groups"={"short"}}
  *         },
  *         "post"={
  *             "path"="/auth/blog/{id}"
@@ -28,7 +26,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     itemOperations={
  *         "get"={
  *             "path"="/blog/{id}",
- *             "security"="is_granted('ROLE_ADMIN') or object.is_publushed == 'true' or object.poster == user"
+ *             "security"="is_granted('ROLE_ADMIN') or object.isPublushed == 'true' or object.poster == user"
  *         },
  *        "patch"={
  *            "path"="/auth/blog/{id}",
@@ -52,16 +50,15 @@ class Blogs
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups("short")
-     */
-    private $main_img;
-
-    /**
      * @ORM\Column(type="string", length=180, unique=true)
      * @Groups("short")
      */
     private $title;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $mainImg;
 
     /**
      * @ORM\Column(type="string", length=700)
@@ -75,25 +72,13 @@ class Blogs
     private $content;
 
     /**
-     * @ORM\Column(type="datetime")
-     * @Groups("short")
-     */
-    private $created_at;
-
-    /**
-     * @ORM\Column(type="datetime")
-     * @Groups("short")
-     */
-    private $lastupdate_at;
-
-    /**
      * @ORM\Column(type="integer")
      * @Groups("short")
      */
-    private $num_views;
+    private $numViews;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="user_blogs")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="userBlogs")
      * @ORM\JoinColumn(nullable=false)
      * @Groups("short")
      */
@@ -102,7 +87,7 @@ class Blogs
     /**
      * @ORM\Column(type="boolean")
      */
-    public $is_publushed;
+    public $isPublushed;
 
     /**
      * @ORM\OneToMany(targetEntity=PostMeta::class, mappedBy="blogId", orphanRemoval=true)
@@ -125,40 +110,44 @@ class Blogs
      */
     private $Category;
 
-    public function __construct(TokenStorageInterface $tokenStorage)
+    /**
+     * @ORM\Column(type="datetime")
+     * @Groups("short")
+     */
+    private $createdAt;
+
+    /**
+     * @ORM\Column(type="datetime")
+     * @Groups("short")
+     */
+    private $lastupdateAt;
+
+    /**
+     * @var TokenStorageInterface
+     */
+    private $tokenStorage;
+
+    public function __construct()
     {
-        $this->created_at = new \DateTimeImmutable();
-        $this->lastupdate_at = new \DateTimeImmutable();
-        $this->num_views = 0;
+        $this->createdAt = new \DateTimeImmutable();
+        $this->lastupdateAt = new \DateTimeImmutable();
+        $this->numViews = 0;
         $this->postMetas = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->blogTags = new ArrayCollection();
-        $this->blogCategories = new ArrayCollection();
-        $this->poster = $tokenStorage->getToken()->getUser();
+        $this->tokenStorage = new TokenStorage();
+        //$this->poster = $this->tokenStorage->getToken()->getUser();
     }
 
     public function onUpdate()
     {
-        $this->lastupdate_at = new \DateTimeImmutable();
+        $this->lastupdateAt = new \DateTimeImmutable();
     }
 
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getMainImg(): ?string
-    {
-        return $this->main_img;
-    }
-
-    public function setMainImg(string $main_img): self
-    {
-        $this->main_img = $main_img;
-        $this->onUpdate();
-
-        return $this;
     }
 
     public function getTitle(): ?string
@@ -170,6 +159,18 @@ class Blogs
     {
         $this->title = $title;
         $this->onUpdate();
+
+        return $this;
+    }
+
+    public function getMainImg(): ?string
+    {
+        return $this->mainImg;
+    }
+
+    public function setMainImg(string $mainImg): self
+    {
+        $this->mainImg = $mainImg;
 
         return $this;
     }
@@ -200,25 +201,14 @@ class Blogs
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->created_at;
-    }
-
-    public function getLastupdateAt(): ?\DateTimeInterface
-    {
-        return $this->lastupdate_at;
-    }
-
-
     public function getNumViews(): ?int
     {
-        return $this->num_views;
+        return $this->numViews;
     }
 
     public function IncrementViews(): self
     {
-        $this->num_views++;
+        $this->numViews++;
         $this->onUpdate();
 
         return $this;
@@ -229,14 +219,22 @@ class Blogs
         return $this->poster;
     }
 
-    public function getIsPublushed(): ?bool
+    public function setPoster(User $poster): self
     {
-        return $this->is_publushed;
+        $this->poster = $poster;
+        $this->onUpdate();
+
+        return $this;
     }
 
-    public function setIsPublushed(bool $is_publushed): self
+    public function getIsPublushed(): ?bool
     {
-        $this->is_publushed = $is_publushed;
+        return $this->isPublushed;
+    }
+
+    public function setIsPublushed(bool $isPublushed): self
+    {
+        $this->isPublushed = $isPublushed;
         $this->onUpdate();
 
         return $this;
@@ -345,6 +343,16 @@ class Blogs
         $this->Category = $Category;
 
         return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function getLastupdateAt(): ?\DateTimeInterface
+    {
+        return $this->lastupdateAt;
     }
 
 }

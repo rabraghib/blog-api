@@ -37,14 +37,33 @@ class Comment
     private $content;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\ManyToOne(targetEntity=User::class)
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $created_at;
+    private $commenter;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $lastUpdate_at;
+    private $createdAt;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $lastUpdateAt;
+
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable();
+        $this->lastUpdateAt = new \DateTimeImmutable();
+    }
+
+    public function onUpdate()
+    {
+        $this->lastUpdateAt = new \DateTimeImmutable();
+    }
+
 
     public function getId(): ?int
     {
@@ -59,6 +78,7 @@ class Comment
     public function setBlogId(?Blogs $blogId): self
     {
         $this->blogId = $blogId;
+        $this->onUpdate();
 
         return $this;
     }
@@ -71,6 +91,7 @@ class Comment
     public function setParentId(?comment $parentId): self
     {
         $this->parentId = $parentId;
+        $this->onUpdate();
 
         return $this;
     }
@@ -83,31 +104,32 @@ class Comment
     public function setContent(string $content): self
     {
         $this->content = $content;
+        $this->onUpdate();
+
+        return $this;
+    }
+
+    public function getCommenter(): ?User
+    {
+        return $this->commenter;
+    }
+
+    public function setCommenter(?User $commenter): self
+    {
+        $this->commenter = $commenter;
 
         return $this;
     }
 
     public function getCreatedAt(): ?\DateTimeInterface
     {
-        return $this->created_at;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $created_at): self
-    {
-        $this->created_at = $created_at;
-
-        return $this;
+        return $this->createdAt;
     }
 
     public function getLastUpdateAt(): ?\DateTimeInterface
     {
-        return $this->lastUpdate_at;
+        return $this->lastUpdateAt;
+        $this->onUpdate();
     }
 
-    public function setLastUpdateAt(\DateTimeInterface $lastUpdate_at): self
-    {
-        $this->lastUpdate_at = $lastUpdate_at;
-
-        return $this;
-    }
 }
