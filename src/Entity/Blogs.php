@@ -17,7 +17,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     collectionOperations={
  *         "get"={
  *             "path"="/blogs.{_format}",
- *             "normalization_context"={"groups"={"short"}}
+ *             "normalization_context"={"groups"={"require"}}
  *         },
  *         "post"={
  *             "path"="/auth/blog/{id}"
@@ -46,7 +46,7 @@ class Blogs
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups("short")
+     * @Groups("short","require")
      */
     private $id;
 
@@ -75,19 +75,20 @@ class Blogs
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups("short")
+     * @Groups("short","require")
      */
     private $numViews;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="userBlogs")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups("short")
+     * @Groups("short","require")
      */
     public $poster;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups("short","require")
      */
     public $isPublushed;
 
@@ -109,18 +110,19 @@ class Blogs
 
     /**
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="blogs")
+     * @Groups("short","require")
      */
     private $Category;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups("short")
+     * @Groups("short","require")
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups("short")
+     * @Groups("short","require")
      */
     private $lastupdateAt;
 
