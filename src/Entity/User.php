@@ -16,7 +16,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ApiResource(
  *     collectionOperations={
  *         "get"={
- *             "path"="/users",
+ *             "path"="/users.{_format}",
  *             "normalization_context"={"groups"={"public"}}
  *         },
  *         "post"
