@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\BlogsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -10,6 +11,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Elasticsearch\DataProvider\Filter\OrderFilter;
 
 #  "controller"=App\Controller\BlogController::class
 /**
@@ -38,6 +41,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *         }
  *     }
  * )
+ * @ApiFilter(SearchFilter::class, properties={"poster": "exact"})
  * @ORM\Entity(repositoryClass=BlogsRepository::class)
  */
 class Blogs

@@ -90,6 +90,16 @@ class User implements UserInterface
     private $lastName;
 
     /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $profileImg;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $bgImg;
+
+    /**
      * @ORM\Column(type="string", length=180, unique=true)
      */
     private $email;
@@ -267,6 +277,30 @@ class User implements UserInterface
     {
         $this->lastName = $lastName;
         $this->onUpdate();
+
+        return $this;
+    }
+
+    public function getProfileImg(): ?string
+    {
+        return $this->profileImg;
+    }
+
+    public function setProfileImg(string $profileImg): self
+    {
+        $this->profileImg = $profileImg;
+
+        return $this;
+    }
+
+    public function getBgImg(): ?string
+    {
+        return $this->bgImg;
+    }
+
+    public function setBgImg(string $bgImg): self
+    {
+        $this->bgImg = $bgImg;
 
         return $this;
     }

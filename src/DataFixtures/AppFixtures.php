@@ -21,10 +21,12 @@ class AppFixtures extends Fixture
                 ->setPassword($faker->password)
                 ->setFirstName($faker->firstName)
                 ->setLastName($faker->lastName)
+                ->setProfileImg("https://picsum.photos/id/".random_int(1,100)."/80")
+                ->setBgImg("https://picsum.photos/id/".random_int(1,100)."/108/1024")
                 ->setMobile($faker->phoneNumber)
                 ->setIntro($faker->text(500));
             $manager->persist($user);
-            for ($b = 0;$b < random_int(1,8); $b++){
+            for ($b = 0;$b < random_int(2,20); $b++){
                 $blog = new Blogs();
                 $blog
                     ->setTitle($faker->text(80))
