@@ -21,8 +21,8 @@ class AppFixtures extends Fixture
                 ->setPassword($faker->password)
                 ->setFirstName($faker->firstName)
                 ->setLastName($faker->lastName)
-                ->setProfileImg("https://picsum.photos/id/".random_int(1,100)."/80")
-                ->setBgImg("https://picsum.photos/id/".random_int(1,100)."/108/1024")
+                ->setProfileImg("https://picsum.photos/id/".mt_rand(1,100)."/80")
+                ->setBgImg("https://picsum.photos/id/".mt_rand(1,100)."/2100/900")
                 ->setMobile($faker->phoneNumber)
                 ->setIntro($faker->text(500));
             $manager->persist($user);
@@ -34,7 +34,7 @@ class AppFixtures extends Fixture
                     ->setIsPublushed(random_int(1,10)%2 == 0)
                     ->setPoster($user)
                     ->setContent($faker->text(10000))
-                    ->setMainImg("https://picsum.photos/id/".random_int(1,100)."/900/500");
+                    ->setMainImg("https://picsum.photos/id/".mt_rand(1,100)."/900/500");
                 $manager->persist($blog);
             }
         }
