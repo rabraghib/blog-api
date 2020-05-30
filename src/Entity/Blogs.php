@@ -50,25 +50,22 @@ class Blogs
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"short","require"})
+     * @Groups({"require"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=80, unique=true)
-     * @Groups("short")
      */
     private $title;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("short")
      */
     private $mainImg;
 
     /**
      * @ORM\Column(type="string", length=250)
-     * @Groups("short")
      */
     private $intro;
     
@@ -79,20 +76,20 @@ class Blogs
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"short","require"})
+     * @Groups({"require"})
      */
     private $numViews;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="userBlogs")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"short","require"})
+     * @Groups({"require"})
      */
     public $poster;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"short","require"})
+     * @Groups({"require"})
      */
     public $isPublushed;
 
@@ -108,25 +105,24 @@ class Blogs
 
     /**
      * @ORM\OneToMany(targetEntity=BlogTag::class, mappedBy="blogId", orphanRemoval=true)
-     * @Groups("short")
      */
     private $blogTags;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="blogs")
-     * @Groups({"short","require"})
-     */
+     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="blogs") 
+     * @Groups({"require"})
+    */
     private $Category;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"short","require"})
+     * @Groups({"require"})
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"short","require"})
+     * @Groups({"require"})
      */
     private $lastupdateAt;
 
