@@ -8,8 +8,6 @@ use App\Repository\BlogsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Elasticsearch\DataProvider\Filter\OrderFilter;
@@ -126,11 +124,6 @@ class Blogs
      */
     private $lastupdateAt;
 
-    /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage;
-
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -139,8 +132,6 @@ class Blogs
         $this->postMetas = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->blogTags = new ArrayCollection();
-        $this->tokenStorage = new TokenStorage();
-        $this->poster = $this->tokenStorage->getToken()->getUser();
     }
 
     public function onUpdate()
@@ -222,7 +213,7 @@ class Blogs
     {
         return $this->poster;
     }
-/*
+
     public function setPoster(User $poster): self
     {
         $this->poster = $poster;
@@ -230,7 +221,7 @@ class Blogs
 
         return $this;
     }
-*/
+
     public function getIsPublushed(): ?bool
     {
         return $this->isPublushed;

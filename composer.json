@@ -2,13 +2,14 @@
     "type": "project",
     "license": "proprietary",
     "require": {
-        "php": "^7.4",
+        "php": "^8.0",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "api-platform/api-pack": "^1.2",
         "doctrine/doctrine-bundle": "^2.0",
         "doctrine/doctrine-migrations-bundle": "^2.1",
         "doctrine/orm": "^2.7",
+        "fakerphp/faker": "^1.14",
         "gesdinet/jwt-refresh-token-bundle": "^0.9.1",
         "lexik/jwt-authentication-bundle": "^2.6",
         "nelmio/cors-bundle": "^2.0",
@@ -21,7 +22,6 @@
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.3",
-        "fzaninotto/faker": "^1.9",
         "symfony/maker-bundle": "^1.18"
     },
     "config": {

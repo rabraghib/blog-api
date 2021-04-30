@@ -1,11 +1,11 @@
 <?php
-/*
+
 namespace App\DataFixtures;
 
 use App\Entity\Blogs;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
 class AppFixtures extends Fixture
@@ -44,4 +44,3 @@ class AppFixtures extends Fixture
         $manager->flush();
     }
 }
-*/
