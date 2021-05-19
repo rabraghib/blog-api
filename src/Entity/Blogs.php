@@ -25,10 +25,7 @@ use ApiPlatform\Core\Bridge\Elasticsearch\DataProvider\Filter\OrderFilter;
  *         }
  *     },
  *     itemOperations={
- *         "get"={
- *             "path"="/blog/{id}",
- *             "security"="is_granted('ROLE_ADMIN') or object.isPublushed == 'true' or object.poster == user"
- *         },
+ *        "get",
  *        "patch"={
  *            "path"="/auth/blog/{id}",
  *            "security"="is_granted('ROLE_ADMIN') or object.poster == user"
