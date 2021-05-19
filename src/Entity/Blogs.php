@@ -15,10 +15,10 @@ use ApiPlatform\Core\Bridge\Elasticsearch\DataProvider\Filter\OrderFilter;
 #  "controller"=App\Controller\BlogController::class
 /**
  * @ApiResource(
+ *     normalizationContext={"groups"={"require"}},
  *     collectionOperations={
  *         "get"={
- *             "path"="/blogs.{_format}",
- *             "normalization_context"={"groups"={"require"}}
+ *             "path"="/blogs.{_format}"
  *         },
  *         "post"={
  *             "path"="/auth/blog/{id}"
@@ -94,16 +94,19 @@ class Blogs
 
     /**
      * @ORM\OneToMany(targetEntity=PostMeta::class, mappedBy="blogId", orphanRemoval=true)
+     * @Groups({"require"})
      */
     private $postMetas;
 
     /**
      * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="blogId", orphanRemoval=true)
+     * @Groups({"require"})
      */
     private $comments;
 
     /**
      * @ORM\OneToMany(targetEntity=BlogTag::class, mappedBy="blogId", orphanRemoval=true)
+     * @Groups({"require"})
      */
     private $blogTags;
 
