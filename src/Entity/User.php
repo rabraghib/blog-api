@@ -56,7 +56,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups("public")
+     * @Groups({"require","public"})
      */
     private $username;
 
@@ -79,13 +79,13 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=50)
-     * @Groups("public")
+     * @Groups({"require","public"})
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=50)
-     * @Groups("public")
+     * @Groups({"require","public"})
      */
     private $lastName;
 
