@@ -17,8 +17,7 @@ use ApiPlatform\Core\Bridge\Elasticsearch\DataProvider\Filter\OrderFilter;
  * @ApiResource(
  *     collectionOperations={
  *         "get"={
- *             "path"="/blogs.{_format}",
- *             "normalization_context"={"groups"={"require"}}
+ *             "path"="/blogs.{_format}"
  *         },
  *         "post"={
  *             "path"="/auth/blog/{id}"
