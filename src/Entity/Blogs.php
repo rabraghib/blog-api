@@ -17,7 +17,8 @@ use ApiPlatform\Core\Bridge\Elasticsearch\DataProvider\Filter\OrderFilter;
  * @ApiResource(
  *     collectionOperations={
  *         "get"={
- *             "path"="/blogs.{_format}"
+ *             "path"="/blogs.{_format}",
+ *             "normalization_context"={"groups"={"require"}}
  *         },
  *         "post"={
  *             "path"="/auth/blog/{id}"
@@ -53,21 +54,25 @@ class Blogs
 
     /**
      * @ORM\Column(type="string", length=80, unique=true)
+     * @Groups({"require"})
      */
     private $title;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"require"})
      */
     private $mainImg;
 
     /**
      * @ORM\Column(type="string", length=250)
+     * @Groups({"require"})
      */
     private $intro;
     
     /**
      * @ORM\Column(type="text")
+     * @Groups({"require"})
      */
     private $content;
 
